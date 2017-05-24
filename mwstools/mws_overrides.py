@@ -1,4 +1,4 @@
-import urllib
+import urllib.parse
 
 from requests import Session, Response
 from requests.adapters import HTTPAdapter, CaseInsensitiveDict, get_encoding_from_headers, extract_cookies_to_jar
@@ -101,9 +101,10 @@ class _MWS(MWS):
         }
         params.update(extra_data)
         request_description = '&'.join(
-            ['%s=%s' % (k, urllib.quote(params[k], safe='-_.~').encode('utf-8')) for k in sorted(params)])
+#             ['%s=%s' % (k, urllib.parse.quote(params[k], safe='-_.~').encode('utf-8')) for k in sorted(params)])
+            ['%s=%s' % (k, urllib.parse.quote(params[k], safe='-_.~')) for k in sorted(params)])
         signature = self.calc_signature(method, request_description)
-        url = '%s%s?%s&Signature=%s' % (self.domain, self.uri, request_description, urllib.quote(signature))
+        url = '%s%s?%s&Signature=%s' % (self.domain, self.uri, request_description, urllib.parse.quote(signature))
         headers = {'User-Agent': 'python-amazon-mws/0.0.1 (Language=Python)'}
         headers.update(kwargs.get('extra_headers', {}))
 
